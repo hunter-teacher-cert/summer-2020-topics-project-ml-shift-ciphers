@@ -125,12 +125,10 @@ private static String shift(int shift){
         String out = "";
         for (int i = 0; i < in.length(); i++) {
                 int c = (int)in.charAt(i) - 97;
-                //System.out.println(c);
                 if((c < 0) || (c > 26)) {
                         out += in.charAt(i);
                 } else {
-                        int ch = ((c + shift) % 26 ) + 97;
-                        // System.out.println(ch);
+                        int ch = ((c + shift) % 26 ) + 97; // take index of A-Z letter, add shift value, mod 26 to keep between A-Z, then add 97 to convert to ASCII
                         out += (char)ch;
                 }
         }
@@ -170,7 +168,6 @@ public static void main (String[] args){
         int offset = calcShift(mostFreqLetter(arr));
         System.out.printf("Shifted by %d, %s\n", offset, shift(offset));
         System.out.println();
-
 
 
 }
