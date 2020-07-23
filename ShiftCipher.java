@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class ShiftCipher {
-// Attributes - encoded string provided by the user.
+/// Attributes - encoded string provided by the user.
 private static String in;
 
 //                       a,b,c,d,e ,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
@@ -14,15 +14,15 @@ private int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
 public static void setInput(){
         Scanner str = new Scanner(System.in);
         System.out.print("Input your encoded message: ");
-        String lowercase_str = str.nextLine(); // Convert input to lowercase string
-        in = lowerCase(lowercase_str); // lowercase string
+        String lowercase_str = str.nextLine();   // Convert input to lowercase string
+        in = lowerCase(lowercase_str);   // lowercase string
 }
 
 /*
    Turns a string of various cases to lowercase
  */
 public static String lowerCase (String s){
-        return s.toLowerCase(); // bye-bye compiler
+        return s.toLowerCase();   // bye-bye compiler
 }
 
 /*
@@ -36,13 +36,66 @@ public static int[] makeFreqArray (){
                         alpha[c]++;
                 }
         }
-        return alpha; // bye-bye compiler
+        return alpha;   // bye-bye compiler
 }
+
+
+public static int freqLetter(int[] arr, int option) {
+        if(arr.length < 3) {
+                throw new IllegalArgumentException("Array size must be 3 or larger.");
+        }
+        if(option != 1 && option != 2 && option != 3) {
+                throw new IllegalArgumentException("Option must be 1, 2, or 3.");
+        }
+        // find the first largest element and save as firstLargestValue
+        int firstLargestValue = arr[0];
+        int firstLargestIndex = 0;
+
+        for(int i = 1; i < arr.length; i++) {
+                if(arr[i] > firstLargestValue) {
+                        firstLargestValue = arr[i];
+                        firstLargestIndex = i;
+                }
+        }
+        // find the second largest element and save as secondLargestValue
+        int secondLargestValue = -1;
+        int secondLargestIndex = -1;
+
+        for(int i = 0; i < arr.length; i++) {
+                if(arr[i] > secondLargestValue && arr[i] <= firstLargestValue && i != firstLargestIndex) {
+                        secondLargestValue = arr[i];
+                        secondLargestIndex = i;
+                }
+        }
+        //find third largest element and save as thirdLargestValue
+        int thirdLargestValue = -1;
+        int thirdLargestIndex = -1;
+
+        for(int i = 0; i < arr.length; i++) {
+                if(arr[i] > thirdLargestValue && arr[i] <= secondLargestValue && i != firstLargestIndex && i != secondLargestIndex) {
+                        thirdLargestValue = arr[i];
+                        thirdLargestIndex = i;
+                }
+        }
+
+        if(option == 1) {
+                return firstLargestIndex;
+        }
+        else if(option == 2) {
+                return secondLargestIndex;
+        }
+        else if(option == 3) {
+                return thirdLargestIndex;
+        }
+        return -1;
+}
+
+
 
 /*
    Accepts an int [] alpha (of letter distributions) and determines the most frequently seen letter. It returns this letter as char.
- */
-public static int freqLetter (int[] alpha, int option){
+
+   public static int freqLetter (int[] alpha, int option){
         //option 1 = most frequent
         //option 2 = second most frequent
         //option 3 = third most frequent
@@ -57,7 +110,9 @@ public static int freqLetter (int[] alpha, int option){
                 }
         }
         return inx;
-}
+   }
+ */
+
 public static int mostFreqLetter(int[] alpha){
         return freqLetter(alpha,1);
 }
@@ -100,13 +155,24 @@ public static void main (String[] args){
         int[] arr;
         setInput();
         arr = makeFreqArray();
+        System.out.println();
         System.out.println("Frequency array of input: " + Arrays.toString(arr));
-        System.out.println("Most frequent letter of input: " + (char)(mostFreqLetter(arr) + 97));
-        System.out.println("Index of most frequent letter: " + mostFreqLetter(arr));
+        System.out.println();
+        System.out.println("First most frequent letter of input: " + (char)(freqLetter(arr, 1) + 97));
+        System.out.println("Index of first most frequent letter: " + freqLetter(arr, 1));
+        System.out.println();
+        System.out.println("Second most frequent letter of input: " + (char)(freqLetter(arr, 2) + 97));
+        System.out.println("Index of second most frequent letter: " + freqLetter(arr, 2));
+        System.out.println();
+        System.out.println("Third most frequent letter of input: " + (char)(freqLetter(arr, 3) + 97));
+        System.out.println("Index of third most frequent letter: " + freqLetter(arr, 3));
+        System.out.println();
         int offset = calcShift(mostFreqLetter(arr));
         System.out.printf("Shifted by %d, %s\n", offset, shift(offset));
-
         System.out.println();
+
+
+
 }
 
 }
