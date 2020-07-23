@@ -59,39 +59,39 @@ public static int freqLetter (int[] alpha, int option){
         return inx;
 }
 public static int mostFreqLetter(int[] alpha){
-    return freqLetter(alpha,1);
+        return freqLetter(alpha,1);
 }
 
 /*
    Shifts all letters in a string "i" places to the right.
  */
 private static String shift(int shift){
-      // ABC --> 97, 98, 99
-      String out = "";
-      for (int i = 0; i < in.length(); i++) {
-              int c = (int)in.charAt(i) - 97;
-              //System.out.println(c);
-              if((c < 0) || (c > 26)) {
-                      out += in.charAt(i);
-              } else {
-                    int ch = ((c + shift) % 26 ) + 97;
-                    // System.out.println(ch);
-                    out += (char)ch;
-              }
-      }
-      return out;
+        // ABC --> 97, 98, 99
+        String out = "";
+        for (int i = 0; i < in.length(); i++) {
+                int c = (int)in.charAt(i) - 97;
+                //System.out.println(c);
+                if((c < 0) || (c > 26)) {
+                        out += in.charAt(i);
+                } else {
+                        int ch = ((c + shift) % 26 ) + 97;
+                        // System.out.println(ch);
+                        out += (char)ch;
+                }
+        }
+        return out;
 }
 
 public static int calcShift(int letter) {
-    // message   EEEE  ASCII: 101   LETTER: 4
-    // encrypted AAAA  ASCII: 97    LETTER 0
-    // test      HHHH  ASCII: 104   LETTER: 7
+        // message   EEEE  ASCII: 101   LETTER: 4
+        // encrypted AAAA  ASCII: 97    LETTER 0
+        // test      HHHH  ASCII: 104   LETTER: 7
 
-    // (E-B+26)%26 = 4 - 1 + 26 % 26 = 3
-    // (E-H+26)%26 = 4 - 7 + 26 % 26 = 23
-    int shift = (4 - letter + 26) % 26;
+        // (E-B+26)%26 = 4 - 1 + 26 % 26 = 3
+        // (E-H+26)%26 = 4 - 7 + 26 % 26 = 23
+        int shift = (4 - letter + 26) % 26;
 
-    return shift;
+        return shift;
 }
 
 public static void main (String[] args){
@@ -110,11 +110,3 @@ public static void main (String[] args){
 }
 
 }
-
-
-
-
-
-
-// Used lowercase() in setInput() method
-// 'r' that was printing was just wrapped text of my Terminal command
