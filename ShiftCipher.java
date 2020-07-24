@@ -6,7 +6,7 @@ public class ShiftCipher {
 private static String in;
 
 //                       a,b,c,d,e ,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
-private int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
+private static int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
 
 /*
    Gets the input string from the user and returns it as a lowercase string
@@ -41,11 +41,11 @@ public static int[] makeFreqArray (){
 
 
 public static int freqLetter(int[] arr, int option) {
-        if(arr.length < 3) {
-                throw new IllegalArgumentException("Array size must be 3 or larger.");
+        if(arr.length < 5) {
+                throw new IllegalArgumentException("Array size must be 5 or larger.");
         }
-        if(option != 1 && option != 2 && option != 3) {
-                throw new IllegalArgumentException("Option must be 1, 2, or 3.");
+        if((option < 1) || (option > 5)) {
+                throw new IllegalArgumentException("Option must be 1, 2, 3, 4 or 5.");
         }
         // find the first largest element and save as firstLargestValue
         int firstLargestValue = arr[0];
@@ -78,6 +78,28 @@ public static int freqLetter(int[] arr, int option) {
                 }
         }
 
+        //find fourth largest element and save as fourthLargestValue
+        int fourthLargestValue = -1;
+        int fourthLargestIndex = -1;
+
+        for(int i = 0; i < arr.length; i++) {
+                if(arr[i] > fourthLargestValue && arr[i] <= thirdLargestValue && i != firstLargestIndex && i != secondLargestIndex && i != thirdLargestIndex) {
+                        fourthLargestValue = arr[i];
+                        fourthLargestIndex = i;
+                }
+        }
+
+        //find fifth largest element and save as fifthLargestValue
+        int fifthLargestValue = -1;
+        int fifthLargestIndex = -1;
+
+        for(int i = 0; i < arr.length; i++) {
+                if(arr[i] > fifthLargestValue && arr[i] <= fourthLargestValue && i != firstLargestIndex && i != secondLargestIndex && i != thirdLargestIndex && i != fourthLargestIndex) {
+                        fifthLargestValue = arr[i];
+                        fifthLargestIndex = i;
+                }
+        }
+
         if(option == 1) {
                 return firstLargestIndex;
         }
@@ -87,31 +109,16 @@ public static int freqLetter(int[] arr, int option) {
         else if(option == 3) {
                 return thirdLargestIndex;
         }
+        else if(option == 4) {
+                return fourthLargestIndex;
+        }
+        else if(option == 5) {
+                return fifthLargestIndex;
+        }
         return -1;
 }
 
 
-
-/*
-   Accepts an int [] alpha (of letter distributions) and determines the most frequently seen letter. It returns this letter as char.
-
-   public static int freqLetter (int[] alpha, int option){
-        //option 1 = most frequent
-        //option 2 = second most frequent
-        //option 3 = third most frequent
-        int max = -1;
-        int second = -1;
-        int third = -1;
-        int inx = 0;
-        for(int i=0; i < alpha.length; i++) {
-                if (alpha[i]>max) {
-                        max = alpha[i];
-                        inx = i;
-                }
-        }
-        return inx;
-   }
- */
 
 public static int mostFreqLetter(int[] alpha){
         return freqLetter(alpha,1);
@@ -135,24 +142,32 @@ private static String shift(int shift){
         return out;
 }
 
-public static int calcShift(int letter) {
+public static int calcShift(int letter, int charPos) {
         // message   EEEE  ASCII: 101   LETTER: 4
         // encrypted AAAA  ASCII: 97    LETTER 0
         // test      HHHH  ASCII: 104   LETTER: 7
 
         // (E-B+26)%26 = 4 - 1 + 26 % 26 = 3
         // (E-H+26)%26 = 4 - 7 + 26 % 26 = 23
-        int shift = (4 - letter + 26) % 26;
+
+        //int c = (int) c - 97; // bring ascii character down to 0-25.
+
+        int shift = (charPos - letter + 26) % 26;
 
         return shift;
 }
 
-public static void main (String[] args){
-        System.out.println();
+public static void decrypt (){
+        // boolean for answerFound and int for option to run on freqLetter
+        int option = 1;
+        boolean isCorrect = false;
+        int offset = 0;
+        Scanner str = new Scanner(System.in);
+        int charPos = -1;
 
-        int[] arr;
-        setInput();
-        arr = makeFreqArray();
+        setInput(); // sets in
+        int[] arr = makeFreqArray(); //make frequency array for input array
+
         System.out.println();
         System.out.println("Frequency array of input: " + Arrays.toString(arr));
         System.out.println();
@@ -165,10 +180,41 @@ public static void main (String[] args){
         System.out.println("Third most frequent letter of input: " + (char)(freqLetter(arr, 3) + 97));
         System.out.println("Index of third most frequent letter: " + freqLetter(arr, 3));
         System.out.println();
-        int offset = calcShift(mostFreqLetter(arr));
-        System.out.printf("Shifted by %d, %s\n", offset, shift(offset));
+        System.out.println("Fourth most frequent letter of input: " + (char)(freqLetter(arr, 4) + 97));
+        System.out.println("Index of fourth most frequent letter: " + freqLetter(arr, 4));
+        System.out.println();
+        System.out.println("Fifth most frequent letter of input: " + (char)(freqLetter(arr, 5) + 97));
+        System.out.println("Index of fifth most frequent letter: " + freqLetter(arr, 5));
         System.out.println();
 
+        int charOption = 1;
+
+        while ((charOption < 6) && (!isCorrect)) {
+                charPos = freqLetter(engFreq, charOption);
+                // on this line, we can copy the line above, but change engFreq to generatedFreq
+                option = 1;
+                while ((option < 6) && (!isCorrect)) {
+                        offset = calcShift(freqLetter(arr, option), charPos);
+                        System.out.printf("Shifted by %d, %s\n", offset, shift(offset));
+                        System.out.println("Was this correct? y/n");
+
+                        String answer = str.nextLine(); // Convert input to lowercase string
+                        if(answer.equals("Y") || answer.equals("y")) {
+                                isCorrect = true;
+                        }
+                        else{
+                                option++;
+                        }
+                }
+                charOption++;
+        }
+        if(option > 3)
+                System.out.println("Sorry, we couldn't decrypt your message.");
+}
+
+
+public static void main (String[] args){
+        decrypt();
 
 }
 
