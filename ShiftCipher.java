@@ -1,12 +1,17 @@
 import java.io.*;
 import java.util.*;
+import java.lang.*;
+import java.net.*;
 
 public class ShiftCipher {
 /// Attributes - encoded string provided by the user.
 private static String in;
+private static final int MAXOPT = 3;
 
 //                       a,b,c,d,e ,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
-private static int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
+//private static int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
+private static int[] engFreq = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
 
 /*
    Gets the input string from the user and returns it as a lowercase string
@@ -16,6 +21,63 @@ public static void setInput(){
         System.out.print("Input your encoded message: ");
         String lowercase_str = str.nextLine();   // Convert input to lowercase string
         in = lowerCase(lowercase_str);   // lowercase string
+}
+
+/*
+   Generate the Frequency for Language
+ */
+public static void trainFreq(){
+        String sampleText = "";
+        Scanner str = new Scanner(System.in);
+        System.out.print("Input your training text: ");
+        String lowercase_str = str.nextLine(); // Convert input to lowercase string
+        sampleText = lowerCase(lowercase_str); // lowercase string
+        // sampleText = htmlToString("https://www.google.com");
+        // sampleText = lowerCase(sampleText); // lowercase string
+
+        engFreq = makeFreqArray(sampleText);
+        System.out.println();
+        System.out.println("Frequency array of training: " + Arrays.toString(engFreq));
+}
+
+public static String htmlToString (String html){
+        // StringBuilder contentBuilder = new StringBuilder();
+        // try {
+        //         BufferedReader in = new BufferedReader(new FileReader(html));
+        //         String str;
+        //         while ((str = in.readLine()) != null) {
+        //                 contentBuilder.append(str);
+        //         }
+        //         in.close();
+        // } catch (IOException e) {
+        // }
+        // String content = contentBuilder.toString();
+        //
+        // return content;
+
+        String urlToRead = html;
+        URL url; // The URL to read
+        HttpURLConnection conn; // The actual connection to the web page
+        BufferedReader rd; // Used to read results from the web page
+        String line; // An individual line of the web page HTML
+        String result = ""; // A long string containing all the HTML
+
+        try {
+                url = new URL(urlToRead);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = rd.readLine()) != null) {
+                        result += line;
+                }
+                rd.close();
+        } catch (Exception e) {
+                e.printStackTrace();
+        }
+
+
+        System.out.println(result);
+        return result;
 }
 
 /*
@@ -29,22 +91,33 @@ public static String lowerCase (String s){
    Calculates frequency of a character in a given string
  */
 public static int[] makeFreqArray (){
+        return makeFreqArray(in);
+//         int [] alpha = new int[26];
+//         for (int i = 0; i < in.length(); i++) {
+//                 int c = (int)in.charAt(i) - 97;
+//                 if((c >= 0) && (c <=26)) {
+//                         alpha[c]++;
+//                 }
+//         }
+//         return alpha;   // bye-bye compiler
+}
+public static int[] makeFreqArray(String text) {
         int [] alpha = new int[26];
-        for (int i = 0; i < in.length(); i++) {
-                int c = (int)in.charAt(i) - 97;
-                if((c >= 0) && (c <=26)) {
+        for (int i = 0; i < text.length(); i++) {
+                int c = (int)text.charAt(i) - 97;
+                if((c >= 0) && (c < 26)) {
                         alpha[c]++;
                 }
         }
-        return alpha;   // bye-bye compiler
+        return alpha; // bye-bye compiler
 }
 
 
 public static int freqLetter(int[] arr, int option) {
-        if(arr.length < 5) {
+        if(arr.length < MAXOPT) {
                 throw new IllegalArgumentException("Array size must be 5 or larger.");
         }
-        if((option < 1) || (option > 5)) {
+        if((option < 1) || (option > MAXOPT)) {
                 throw new IllegalArgumentException("Option must be 1, 2, 3, 4 or 5.");
         }
         // find the first largest element and save as firstLargestValue
@@ -169,7 +242,7 @@ public static void decrypt (){
         int[] arr = makeFreqArray(); //make frequency array for input array
 
         System.out.println();
-        System.out.println("Frequency array of input: " + Arrays.toString(arr));
+        System.out.println("Frequency array of encoded message: " + Arrays.toString(arr));
         System.out.println();
         System.out.println("First most frequent letter of input: " + (char)(freqLetter(arr, 1) + 97));
         System.out.println("Index of first most frequent letter: " + freqLetter(arr, 1));
@@ -179,21 +252,21 @@ public static void decrypt (){
         System.out.println();
         System.out.println("Third most frequent letter of input: " + (char)(freqLetter(arr, 3) + 97));
         System.out.println("Index of third most frequent letter: " + freqLetter(arr, 3));
-        System.out.println();
-        System.out.println("Fourth most frequent letter of input: " + (char)(freqLetter(arr, 4) + 97));
-        System.out.println("Index of fourth most frequent letter: " + freqLetter(arr, 4));
-        System.out.println();
-        System.out.println("Fifth most frequent letter of input: " + (char)(freqLetter(arr, 5) + 97));
-        System.out.println("Index of fifth most frequent letter: " + freqLetter(arr, 5));
-        System.out.println();
+        // System.out.println();
+        // System.out.println("Fourth most frequent letter of input: " + (char)(freqLetter(arr, 4) + 97));
+        // System.out.println("Index of fourth most frequent letter: " + freqLetter(arr, 4));
+        // System.out.println();
+        // System.out.println("Fifth most frequent letter of input: " + (char)(freqLetter(arr, 5) + 97));
+        // System.out.println("Index of fifth most frequent letter: " + freqLetter(arr, 5));
+        // System.out.println();
 
         int charOption = 1;
 
-        while ((charOption < 6) && (!isCorrect)) {
+        while ((charOption <= MAXOPT) && (!isCorrect)) {
                 charPos = freqLetter(engFreq, charOption);
                 // on this line, we can copy the line above, but change engFreq to generatedFreq
                 option = 1;
-                while ((option < 6) && (!isCorrect)) {
+                while ((option <= MAXOPT) && (!isCorrect)) {
                         offset = calcShift(freqLetter(arr, option), charPos);
                         System.out.printf("Shifted by %d, %s\n", offset, shift(offset));
                         System.out.println("Was this correct? y/n");
@@ -208,12 +281,27 @@ public static void decrypt (){
                 }
                 charOption++;
         }
-        if(option > 3)
+        if(option > MAXOPT) {
+                //   System.out.println("Sorry, we couldn't decrypt your message.");
+
+                /*
+                    // here is where we can ask if the user wants to trian the computer more
+                */
+
                 System.out.println("Sorry, we couldn't decrypt your message.");
-}
+
+
+        }
+
+
+
+
+} // end decrypt
 
 
 public static void main (String[] args){
+
+        trainFreq();
         decrypt();
 
 }
