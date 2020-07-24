@@ -7,6 +7,8 @@ public class ShiftCipher {
 /// Attributes - encoded string provided by the user.
 private static String in;
 private static final int MAXOPT = 3;
+private static int decryptCounter = 0;
+private static int[] arr = null;
 
 //                       a,b,c,d,e ,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
 //private static int[] engFreq = {8,1,3,4,12,2,2,6,7,0,1,4,3,7,8,2,0,6,6,9,3,1,2,0,2,0};
@@ -35,7 +37,7 @@ public static void trainFreq(){
         // sampleText = htmlToString("https://www.google.com");
         // sampleText = lowerCase(sampleText); // lowercase string
 
-        engFreq = makeFreqArray(sampleText);
+        engFreq = makeFreqArray(sampleText,engFreq);
         System.out.println();
         System.out.println("Frequency array of training: " + Arrays.toString(engFreq));
 }
@@ -68,7 +70,14 @@ public static String htmlToString (String html){
                 conn.setRequestMethod("GET");
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 while ((line = rd.readLine()) != null) {
-                        result += line;
+                        if(line.contains("<p>")) {
+                                int turnOn = line.indexOf("<p>");
+                                int turnOff = line.indexOf("</p>", turnOn + 1);
+                                if(turnOn >= 0){
+                                    line = line.substring(turnOn, turnOff);
+                                    result += line;
+                                }
+                        }
                 }
                 rd.close();
         } catch (Exception e) {
@@ -76,7 +85,7 @@ public static String htmlToString (String html){
         }
 
 
-        System.out.println(result);
+        System.out.println("The html string is: " + result);
         return result;
 }
 
@@ -91,18 +100,12 @@ public static String lowerCase (String s){
    Calculates frequency of a character in a given string
  */
 public static int[] makeFreqArray (){
-        return makeFreqArray(in);
-//         int [] alpha = new int[26];
-//         for (int i = 0; i < in.length(); i++) {
-//                 int c = (int)in.charAt(i) - 97;
-//                 if((c >= 0) && (c <=26)) {
-//                         alpha[c]++;
-//                 }
-//         }
-//         return alpha;   // bye-bye compiler
-}
-public static int[] makeFreqArray(String text) {
         int [] alpha = new int[26];
+        return makeFreqArray(in, alpha);
+}
+
+public static int[] makeFreqArray(String text, int[] alpha) {
+        // int [] alpha = new int[26];
         for (int i = 0; i < text.length(); i++) {
                 int c = (int)text.charAt(i) - 97;
                 if((c >= 0) && (c < 26)) {
@@ -232,14 +235,19 @@ public static int calcShift(int letter, int charPos) {
 
 public static void decrypt (){
         // boolean for answerFound and int for option to run on freqLetter
+
         int option = 1;
         boolean isCorrect = false;
         int offset = 0;
         Scanner str = new Scanner(System.in);
         int charPos = -1;
 
-        setInput(); // sets in
-        int[] arr = makeFreqArray(); //make frequency array for input array
+        if(decryptCounter == 0) { // will only ask for input the first time decrypt is called
+                setInput(); // sets in
+                arr = makeFreqArray(); //make frequency array for input array
+                decryptCounter++;
+        }
+
 
         System.out.println();
         System.out.println("Frequency array of encoded message: " + Arrays.toString(arr));
@@ -286,11 +294,18 @@ public static void decrypt (){
 
                 /*
                     // here is where we can ask if the user wants to trian the computer more
-                */
+                 */
 
                 System.out.println("Sorry, we couldn't decrypt your message.");
-
-
+                System.out.println("Do you want to provide additional training text?");
+                String YorN = "";
+                Scanner inStr = new Scanner(System.in);
+                YorN = inStr.nextLine();
+                if (YorN.equals("Y") || YorN.equals("y")) {
+                        trainFreq();
+                        decrypt();
+                } else
+                        System.out.println("OK, bye!");
         }
 
 
@@ -300,7 +315,7 @@ public static void decrypt (){
 
 
 public static void main (String[] args){
-
+        htmlToString("https://en.wikipedia.org/wiki/Quicksort");
         trainFreq();
         decrypt();
 
