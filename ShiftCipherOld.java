@@ -3,7 +3,7 @@ import java.util.*;
 import java.lang.*;
 import java.net.*;
 
-public class ShiftCipher {
+public class ShiftCipherOld {
 /// Attributes - encoded string provided by the user.
 private static String in;
 private static final int MAXOPT = 3;
