@@ -42,7 +42,7 @@ public static void trainFreq(){
             engFreq = makeFreqArray(sampleText,engFreq);
         } else
             engFreq = defaultEngFreq;
-        System.out.println("Frequency array of training: " + Arrays.toString(engFreq));
+        // System.out.println("Frequency array of training: " + Arrays.toString(engFreq));
 }
 
 /**********************************************************
@@ -204,17 +204,18 @@ public static void decrypt (){
         if(decryptCounter == 0) { // will only ask for input the first time decrypt is called
                 setInput(); // sets in
                 arr = makeFreqArray();            //make frequency array for input array
-                maxInx = freqLetter(arr,MAXOPT);  // calculate the max freq in the coded message
                 decryptCounter++;
         }
 
+        maxInx = freqLetter(arr,MAXOPT);  // calculate the max freq in the coded message
+
         System.out.println();
-        System.out.println("Frequency array of encoded message: " + Arrays.toString(arr));
-        for(int i=1; i<=MAXOPT; i++){
-          System.out.println();
-          System.out.println(i+" most frequent letter of input: " + (char)(maxInx[i] + 97));
-          System.out.println("Index of "+i+" most frequent letter: " + maxInx[i]);
-        }
+        // System.out.println("Frequency array of encoded message: " + Arrays.toString(arr));
+        // for(int i=1; i<=MAXOPT; i++){
+        //   System.out.println();
+        //   System.out.println(i+" most frequent letter of input: " + (char)(maxInx[i] + 97));
+        //   System.out.println("Index of "+i+" most frequent letter: " + maxInx[i]);
+        // }
 
         int charOption = 1;
         int[] charMaxPos = freqLetter(engFreq, MAXOPT);
